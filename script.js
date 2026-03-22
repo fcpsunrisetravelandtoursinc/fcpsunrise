@@ -122,9 +122,59 @@ function initImageFallbacks(){
 
 function initVideoFallbacks(){
   document.querySelectorAll('video').forEach((video) => {
-    video.addEventListener('error', () => {
-      video.closest('.promo-video-frame, .hero')?.classList.add('media-fallback');
+    const mediaShell = video.closest('.promo-video-frame, .hero');
+    const sourceNodes = [...video.querySelectorAll('source')];
+    const statusText = mediaShell?.querySelector('.video-status-text');
+    let hasLoaded = video.readyState >= 2;
+
+    const updateState = (state, message = '') => {
+      if (!mediaShell) return;
+      mediaShell.dataset.videoState = state;
+      mediaShell.classList.toggle('media-fallback', state === 'error');
+      if (statusText && message) statusText.textContent = message;
+    };
+
+    const markReady = () => {
+      hasLoaded = true;
+      updateState('ready');
+    };
+
+    const markError = () => {
+      updateState('error', 'We could not load the promo video. Please use the controls to try again.');
+    };
+
+    if (mediaShell?.matches('.promo-video-frame') && !hasLoaded) {
+      updateState('loading', 'Loading the promo video…');
+    }
+
+    video.addEventListener('loadeddata', markReady);
+    video.addEventListener('canplay', markReady);
+    video.addEventListener('playing', markReady);
+    video.addEventListener('error', markError);
+
+    sourceNodes.forEach((source) => source.addEventListener('error', markError));
+
+    video.addEventListener('stalled', () => {
+      if (!hasLoaded && mediaShell?.matches('.promo-video-frame')) {
+        updateState('loading', 'Still loading the promo video…');
+      }
     });
+
+    video.addEventListener('waiting', () => {
+      if (!hasLoaded && mediaShell?.matches('.promo-video-frame')) {
+        updateState('loading', 'Buffering the promo video…');
+      }
+    });
+
+    if (mediaShell?.matches('.promo-video-frame')) {
+      video.load();
+
+      window.setTimeout(() => {
+        if (!hasLoaded && video.readyState < 2) {
+          markError();
+        }
+      }, 8000);
+    }
   });
 }
 
