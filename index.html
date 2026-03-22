@@ -330,11 +330,14 @@
             </div>
             <span class="video-pill" data-animate="fade-in" data-animate-delay="3">Responsive promo video</span>
           </div>
-          <div class="promo-video-frame" data-animate="fade-up" data-animate-delay="2">
-            <video class="feature-video" controls autoplay muted loop playsinline preload="metadata">
+          <div class="promo-video-frame" data-animate="fade-up" data-animate-delay="2" data-video-state="loading">
+            <video class="feature-video" controls muted loop playsinline preload="auto">
               <source src="./video/fcp-official-video.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
+            <div class="video-status" aria-live="polite">
+              <span class="video-status-text">Loading the promo video…</span>
+            </div>
           </div>
         </div>
       </div>

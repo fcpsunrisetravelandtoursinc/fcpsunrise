@@ -181,6 +181,8 @@ img{max-width:100%}
 }
 .airplane-path img{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 30px rgba(3,17,27,.24))}
 
+@keyframes spin{to{transform:rotate(360deg)}}
+
 .promo-video-section{padding-top:0;margin-top:-1.75rem;z-index:2}
 .promo-video-shell{padding:1.1rem;background:linear-gradient(145deg, rgba(255,255,255,.28), rgba(6,35,51,.32));overflow:hidden;position:relative}
 .promo-video-shell::before{
@@ -201,6 +203,57 @@ img{max-width:100%}
 .promo-video-frame{border-radius:26px;overflow:hidden;position:relative;box-shadow:0 24px 55px rgba(4,24,38,.24)}
 .promo-video-frame{height:min(70vh,620px)}
 .feature-video{width:100%;height:100%;display:block;border-radius:inherit;background:#000;object-fit:contain}
+.video-status{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  background:radial-gradient(circle at center, rgba(3,18,28,.22), rgba(3,18,28,.75));
+  transition:opacity .3s ease, visibility .3s ease;
+  z-index:1;
+}
+.video-status-text{
+  display:inline-flex;
+  align-items:center;
+  gap:.8rem;
+  padding:.95rem 1.2rem;
+  border-radius:999px;
+  background:rgba(4,20,31,.78);
+  border:1px solid rgba(255,255,255,.14);
+  color:#f4fbff;
+  font-weight:600;
+  text-align:center;
+  box-shadow:0 14px 30px rgba(0,0,0,.22);
+}
+.video-status-text::before{
+  content:"";
+  width:1rem;
+  height:1rem;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:var(--accent);
+  animation:spin 1s linear infinite;
+}
+.promo-video-frame[data-video-state="ready"] .video-status{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.promo-video-frame[data-video-state="error"] .video-status{
+  background:linear-gradient(135deg, rgba(5,37,53,.82), rgba(14,82,108,.7));
+}
+.promo-video-frame[data-video-state="error"] .video-status-text::before{
+  content:"⚠";
+  width:auto;
+  height:auto;
+  border:0;
+  animation:none;
+  color:var(--accent);
+  font-size:1rem;
+  line-height:1;
+}
 .promo-video-frame::after{content:"";position:absolute;inset:0;border-radius:26px;border:1px solid rgba(255,255,255,.14);pointer-events:none}
 
 .promo-video-frame.media-fallback,.hero.media-fallback{background:linear-gradient(135deg, rgba(15,107,154,.85), rgba(39,215,197,.5), rgba(255,215,106,.45));}
